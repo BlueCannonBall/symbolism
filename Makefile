@@ -12,7 +12,7 @@ endif
 
 compiler := zcc
 compilation_flags := +ti83p -create-app -startup=10
-libraries :=
+libraries := -lm
 
 default: symbol$(out_ext)
 .PHONY: default

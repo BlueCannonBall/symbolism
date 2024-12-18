@@ -6,4 +6,5 @@ artifact = "obj"
 [options]
 compiler = "zcc"
 compilation-flags = "+ti83p -create-app -startup=10"
+libraries = ["m"]
 clean-preludes = ["rm -f symbol.8xp"]
