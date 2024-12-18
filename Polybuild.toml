@@ -1,0 +1,9 @@
+[paths]
+output = "symbol" # Apparently, the name of the file itself can't be more than 6 characters
+source = ["."]
+artifact = "obj"
+
+[options]
+compiler = "zcc"
+compilation-flags = "+ti83p -create-app -startup=10"
+clean-preludes = ["rm -f symbol.8xp"]
