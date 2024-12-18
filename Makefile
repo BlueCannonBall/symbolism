@@ -11,7 +11,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 compiler := zcc
-compilation_flags := +ti83p -create-app -startup=10
+compilation_flags := +ti83p -create-app -startup=10 -O3
 libraries := -lm
 
 default: symbol$(out_ext)
