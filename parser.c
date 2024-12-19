@@ -10,7 +10,7 @@ struct Expression* create_expr() {
     static struct Expression exprs[64] = {0}; // 64 expressions MAXIMUM at ALL TIMES
     struct Expression* ret = &exprs[expr_cursor++];
     if (expr_cursor >= 64) {
-        fprintf(stderr, "HEAP FAILURE\n");
+        fprintf(stderr, "=== HEAP FAILURE ===\n");
         exit(EXIT_FAILURE);
     }
     memset(ret, 0, sizeof(struct Expression));
