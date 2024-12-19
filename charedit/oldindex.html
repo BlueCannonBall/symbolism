@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monochrome Character Editor</title>
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 20px);
+      grid-gap: 2px;
+      margin-bottom: 10px;
+    }
+    .cell {
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .cell.active {
+      background-color: black;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid" id="grid"></div>
+  <button id="generate">Generate C Code</button>
+  <pre id="output"></pre>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const output = document.getElementById("output");
+
+    // Create 5x7 grid
+    for (let i = 0; i < 5 * 7; i++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.addEventListener("click", () => {
+        cell.classList.toggle("active");
+      });
+      grid.appendChild(cell);
+    }
+
+    // Generate C code
+    const generateButton = document.getElementById("generate");
+    generateButton.addEventListener("click", () => {
+      const cells = document.querySelectorAll(".cell");
+      let bits = [];
+
+      // Collect active states row by row
+      for (let row = 0; row < 7; row++) {
+        let byte = 0;
+        for (let col = 0; col < 5; col++) {
+          if (cells[row * 5 + col].classList.contains("active")) {
+            byte |= (1 << (4 - col)); // Set corresponding bit
+          }
+        }
+        bits.push(byte);
+      }
+
+      // Generate C code
+      const cCode = `{
+        5,
+        7,
+        ${bits.map(b => `0b${b.toString(2).padStart(5, "0")} << 3`).join(",\n        ")}
+      }`;
+
+      output.textContent = cCode;
+    });
+  </script>
+</body>
+</html>
+

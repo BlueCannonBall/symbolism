@@ -1,15 +1,11 @@
 #pragma string name SYMBOL
 
-#include "parser.h"
-#include <stdio.h>
+// #include "parser.h"
+#include "console.h"
+#include <graphics.h>
 
 int main() {
-    char line[20];
-    puts("Enter equation:");
-    fgets(line, sizeof(line), stdin);
-
-    struct Expression* expr = parse(line);
-
-    printf("%s\n", line);
+    clg();
+    print("01022201");
     return 0;
 }
