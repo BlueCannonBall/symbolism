@@ -6,6 +6,7 @@
 
 int main() {
     clg();
-    print("01022201");
+    print("012");
+    print("210");
     return 0;
 }

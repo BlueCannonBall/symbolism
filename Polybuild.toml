@@ -8,7 +8,3 @@ compiler = "zcc"
 compilation-flags = "+ti83p -create-app -startup=10"
 libraries = ["m"]
 clean-preludes = ["rm -f symbol.8xp"]
-
-[env.mode.compat.options] # run `make clean && make mode=compat` to generate a GCC version
-compiler = "gcc"
-compilation-flags = "-g"

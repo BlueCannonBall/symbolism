@@ -14,12 +14,6 @@ compiler := zcc
 compilation_flags := +ti83p -create-app -startup=10
 libraries := -lm
 
-ifeq ($(mode),compat)
-	compiler := "gcc"
-	compilation_flags := -g
-	libraries := -lm
-endif
-
 default: symbol$(out_ext)
 .PHONY: default
 
