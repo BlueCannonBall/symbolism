@@ -14,16 +14,28 @@ compiler := zcc
 compilation_flags := +ti83p -create-app -startup=10 -O3
 libraries := -lm
 
+ifeq ($(mode),compat)
+	compiler := "gcc"
+	compilation_flags := -g
+	libraries := -lm
+endif
+
 default: symbol$(out_ext)
 .PHONY: default
 
-obj/main_0$(obj_ext): ./main.c
+obj/main_0$(obj_ext): ./main.c ./parser.h
 	@printf '\033[1m[POLYBUILD]\033[0m Compiling $@ from $<...\n'
 	@mkdir -p obj
 	@$(compiler) -c $< $(compilation_flags) -o $@
 	@printf '\033[1m[POLYBUILD]\033[0m Finished compiling $@ from $<!\n'
 
-symbol$(out_ext): obj/main_0$(obj_ext)
+obj/parser_0$(obj_ext): ./parser.c ./parser.h
+	@printf '\033[1m[POLYBUILD]\033[0m Compiling $@ from $<...\n'
+	@mkdir -p obj
+	@$(compiler) -c $< $(compilation_flags) -o $@
+	@printf '\033[1m[POLYBUILD]\033[0m Finished compiling $@ from $<!\n'
+
+symbol$(out_ext): obj/main_0$(obj_ext) obj/parser_0$(obj_ext)
 	@printf '\033[1m[POLYBUILD]\033[0m Building $@...\n'
 	@$(compiler) $^ $(static_libraries) $(compilation_flags) $(libraries) -o $@
 	@printf '\033[1m[POLYBUILD]\033[0m Finished building $@!\n'
