@@ -280,6 +280,351 @@ unsigned char* get_char_sprite(char c) {
         return sprite_divide;
     }
 
+    case 'a': {
+        static unsigned char sprite_a[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x70,
+            0x08,
+            0x78,
+            0x88,
+            0x78,
+        };
+        return sprite_a;
+    }
+
+    case 'b': {
+        static unsigned char sprite_b[] = {
+            5,
+            7,
+            0x80,
+            0x80,
+            0x80,
+            0xF0,
+            0x88,
+            0x88,
+            0xF0,
+        };
+        return sprite_b;
+    }
+
+    case 'c': {
+        static unsigned char sprite_c[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x78,
+            0x80,
+            0x80,
+            0x80,
+            0x78,
+        };
+        return sprite_c;
+    }
+
+    case 'd': {
+        static unsigned char sprite_d[] = {
+            5,
+            7,
+            0x08,
+            0x08,
+            0x08,
+            0x78,
+            0x88,
+            0x88,
+            0x78,
+        };
+        return sprite_d;
+    }
+
+    case 'e': {
+        static unsigned char sprite_e[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x70,
+            0x88,
+            0xF8,
+            0x80,
+            0x70,
+        };
+        return sprite_e;
+    }
+
+    case 'f': {
+        static unsigned char sprite_f[] = {
+            5,
+            7,
+            0x30,
+            0x40,
+            0x40,
+            0xF0,
+            0x40,
+            0x40,
+            0x40,
+        };
+        return sprite_f;
+    }
+
+    case 'g': {
+        static unsigned char sprite_g[] = {
+            5,
+            7,
+            0x00,
+            0x78,
+            0x88,
+            0x88,
+            0x78,
+            0x08,
+            0x70,
+        };
+        return sprite_g;
+    }
+
+    case 'h': {
+        static unsigned char sprite_h[] = {
+            5,
+            7,
+            0x80,
+            0x80,
+            0x80,
+            0xF0,
+            0x88,
+            0x88,
+            0x88,
+        };
+        return sprite_h;
+    }
+
+    case 'i': {
+        static unsigned char sprite_i[] = {
+            5,
+            7,
+            0x00,
+            0x20,
+            0x00,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+        };
+        return sprite_i;
+    }
+
+    case 'j': {
+        static unsigned char sprite_j[] = {
+            5,
+            7,
+            0x00,
+            0x10,
+            0x00,
+            0x10,
+            0x10,
+            0x50,
+            0x30,
+        };
+        return sprite_j;
+    }
+
+    case 'k': {
+        static unsigned char sprite_k[] = {
+            5,
+            7,
+            0x80,
+            0x80,
+            0x90,
+            0xA0,
+            0xC0,
+            0xA0,
+            0x90,
+        };
+        return sprite_k;
+    }
+
+    case 'l': {
+        static unsigned char sprite_l[] = {
+            5,
+            7,
+            0x60,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x30,
+        };
+        return sprite_l;
+    }
+
+    case 'm': {
+        static unsigned char sprite_m[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0xF0,
+            0xA8,
+            0xA8,
+            0xA8,
+            0x88,
+        };
+        return sprite_m;
+    }
+
+    case 'n': {
+        static unsigned char sprite_n[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0xB0,
+            0xC8,
+            0x88,
+            0x88,
+            0x88,
+        };
+        return sprite_n;
+    }
+
+    case 'o': {
+        static unsigned char sprite_o[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x70,
+            0x88,
+            0x88,
+            0x88,
+            0x70,
+        };
+        return sprite_o;
+    }
+
+    case 'p': {
+        static unsigned char sprite_p[] = {
+            5,
+            7,
+            0x00,
+            0x70,
+            0x88,
+            0x88,
+            0xF0,
+            0x80,
+            0x80,
+        };
+        return sprite_p;
+    }
+
+    case 'q': {
+        static unsigned char sprite_q[] = {
+            5,
+            7,
+            0x00,
+            0x70,
+            0x88,
+            0x88,
+            0x78,
+            0x08,
+            0x08,
+        };
+        return sprite_q;
+    }
+
+    case 'r': {
+        static unsigned char sprite_r[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0xB8,
+            0xC0,
+            0x80,
+            0x80,
+            0x80,
+        };
+        return sprite_r;
+    }
+
+    case 's': {
+        static unsigned char sprite_s[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x78,
+            0x80,
+            0x70,
+            0x08,
+            0xF0,
+        };
+        return sprite_s;
+    }
+
+    case 't': {
+        static unsigned char sprite_t[] = {
+            5,
+            7,
+            0x20,
+            0x20,
+            0x70,
+            0x20,
+            0x20,
+            0x20,
+            0x30,
+        };
+        return sprite_t;
+    }
+
+    case 'u': {
+        static unsigned char sprite_u[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x88,
+            0x88,
+            0x88,
+            0x88,
+            0x78,
+        };
+        return sprite_u;
+    }
+
+    case 'v': {
+        static unsigned char sprite_v[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x88,
+            0x88,
+            0x88,
+            0x50,
+            0x20,
+        };
+        return sprite_v;
+    }
+
+    case 'w': {
+        static unsigned char sprite_w[] = {
+            5,
+            7,
+            0x00,
+            0x00,
+            0x88,
+            0x88,
+            0xA8,
+            0xA8,
+            0x50,
+        };
+        return sprite_w;
+    }
+
     default: {
         static unsigned char sprite_none[] = {
             5,

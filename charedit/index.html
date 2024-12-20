@@ -60,17 +60,16 @@
       });
       cell.addEventListener("mouseover", () => {
         if (isMouseDown) {
-          cell.classList.add("active");
+          cell.classList.toggle("active");
         }
-      });
-      cell.addEventListener("mouseup", () => {
-        isMouseDown = false;
       });
       grid.appendChild(cell);
     }
 
     document.body.addEventListener("mouseup", () => {
-      isMouseDown = false;
+      if (isMouseDown) {
+        isMouseDown = false;
+      }
     });
 
     // Generate C code
