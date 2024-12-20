@@ -6,7 +6,9 @@
 
 int main() {
     clg();
-    print("012");
-    print("210");
+    print("5.3x+2y-8*4/5.3x+2y-8*4/5.3x+2y-8*4");
+    // print("5.3x+2y-8*4");
+    // print("5.3x+2y-8*4");
+    // print("5.3x+2y-8*4");
     return 0;
 }

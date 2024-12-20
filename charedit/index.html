@@ -26,31 +26,64 @@
       padding: 10px;
       border: 1px solid #ccc;
     }
+    .controls {
+      margin-bottom: 10px;
+    }
+    .character-input {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
+  <div class="controls">
+    <input type="text" id="character" class="character-input" placeholder="Enter character..." maxlength="1">
+    <button id="generate">Generate Case Statement</button>
+    <button id="clear">Clear Grid</button>
+    <button id="copy">Copy to Clipboard</button>
+  </div>
   <div class="grid" id="grid"></div>
-  <button id="generate">Generate C Code</button>
   <pre id="output"></pre>
 
   <script>
     const grid = document.getElementById("grid");
     const output = document.getElementById("output");
+    const characterInput = document.getElementById("character");
+    let isMouseDown = false;
 
     // Create 5x7 grid
     for (let i = 0; i < 5 * 7; i++) {
       const cell = document.createElement("div");
       cell.className = "cell";
-      cell.addEventListener("click", () => {
+      cell.addEventListener("mousedown", () => {
+        isMouseDown = true;
         cell.classList.toggle("active");
+      });
+      cell.addEventListener("mouseover", () => {
+        if (isMouseDown) {
+          cell.classList.add("active");
+        }
+      });
+      cell.addEventListener("mouseup", () => {
+        isMouseDown = false;
       });
       grid.appendChild(cell);
     }
+
+    document.body.addEventListener("mouseup", () => {
+      isMouseDown = false;
+    });
 
     // Generate C code
     const generateButton = document.getElementById("generate");
     generateButton.addEventListener("click", () => {
       const cells = document.querySelectorAll(".cell");
+      const char = characterInput.value.trim();
+
+      if (!char || char.length !== 1) {
+        output.textContent = "Please enter a single character.";
+        return;
+      }
+
       let bits = [];
 
       // Collect active states row by row
@@ -61,19 +94,45 @@
             byte |= (1 << (4 - col)); // Set corresponding bit
           }
         }
-        bits.push(byte);
+        bits.push(byte << 3); // Perform the bitshift here
       }
 
-      // Generate C code
-      const cCode = `{
-    5,
-    7,
-    ${bits.map(b => `0b${b.toString(2).padStart(5, "0")} << 3,`).join("\n    ")}
+      // Generate case statement
+      const cCode = `case '${char}': {
+    static unsigned char sprite_${char}[] = {
+        5,
+        7,
+        ${bits.map(b => `0x${b.toString(16).toUpperCase().padStart(2, "0")},`).join("\n        ")}
+    };
+    return sprite_${char};
 }`;
 
       output.textContent = cCode;
     });
+
+    // Clear the grid
+    const clearButton = document.getElementById("clear");
+    clearButton.addEventListener("click", () => {
+      const cells = document.querySelectorAll(".cell");
+      cells.forEach(cell => cell.classList.remove("active"));
+      output.textContent = "";
+      characterInput.value = "";
+    });
+
+    // Copy to clipboard
+    const copyButton = document.getElementById("copy");
+    copyButton.addEventListener("click", () => {
+      const text = output.textContent;
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Copied to clipboard!");
+        }).catch(err => {
+          alert("Failed to copy: " + err);
+        });
+      } else {
+        alert("Nothing to copy!");
+      }
+    });
   </script>
 </body>
 </html>
-
