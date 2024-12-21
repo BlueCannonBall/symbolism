@@ -18,7 +18,13 @@ void print(const char* str) {
             }
         }
 
-        if (str[i] != ' ') {
+        if (str[i] == '\n') {
+            col = 0;
+            if (++line >= 8) {
+                clg();
+                line = 0;
+            }
+        } else if (str[i] != ' ') {
             char sprite[9];
             sprite[0] = 5;
             sprite[1] = 7;

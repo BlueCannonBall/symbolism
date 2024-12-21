@@ -891,10 +891,10 @@ const char* get_char_sprite(char c) {
             0x88,
             0x88,
             0x88,
-            0xF8,
+            0x78,
             0x08,
-            0x08,
-            0xF0,
+            0x10,
+            0x60,
         };
         return sprite_Y;
     }
