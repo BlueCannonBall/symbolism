@@ -8,6 +8,10 @@
 
 unsigned char line = 0;
 
+void initialize_console() {
+    clg();
+}
+
 void print(const char* str) {
     for (unsigned char i = 0, col = 0; str[i]; ++i, ++col) {
         if (col >= 16) {
@@ -37,4 +41,8 @@ void print(const char* str) {
         clg();
         line = 0;
     }
+}
+
+void read(char* str, unsigned char size) {
+
 }
