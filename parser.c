@@ -37,13 +37,13 @@ float read_number(const char** str) {
         ++*str;
     }
 
-    for (; **str && isdigit(**str); ++*str) {
+    for (; isdigit(**str); ++*str) {
         ret = ret * 10.f + (**str - '0');
     }
 
     if (**str == '.') {
         ++*str; // Skip decimal point
-        for (unsigned char current_decimal_digit = 1; **str && isdigit(**str); ++*str, ++current_decimal_digit) {
+        for (unsigned char current_decimal_digit = 1; isdigit(**str); ++*str, ++current_decimal_digit) {
             float addend = **str - '0';
             for (unsigned char i = 0; i < current_decimal_digit; ++i) {
                 addend /= 10.f;
@@ -56,10 +56,43 @@ float read_number(const char** str) {
 }
 
 struct Expression* parse(const char** str) {
-    struct Expression* expr = create_expr();
-    for (unsigned int i = 0; str[i]; ++i) {
-        if (isdigit(str[i])) {
+    float num;
+    if (isdigit(**str) || **str == '-') {
+        // first, get the number
+        num = read_number(str);
+        struct Expression* lhs = create_expr();
+        lhs->type = EXPRESSION_NONE;
+        lhs->number = num;
+        // after the number there might be an operator, closed parenthesis, or EOI
+        enum ExpressionType operator;
+        switch (**str) {
+            case '+':
+                operator = EXPRESSION_ADD;
+                break;
+            case '-':
+                operator = EXPRESSION_SUBTRACT;
+                break;
+            case 0:
+            case ')': {
+                // if there's a closed parenthesis, we can just return a root
+                return lhs;
+            }
         }
+
+        // get the rhs expression
+        ++*str;
+        struct Expression* rhs = parse(str);
+        struct Expression* final = create_expr();
+        final->lhs = lhs;
+        final->rhs = rhs;
+        final->type = operator;
+        return final;
+    } else if (**str == '(') {
+        // get the lhs
+        ++*str;
+        struct Expression* lhs = parse(str);
+
     }
+
     return NULL;
 }

@@ -11,8 +11,9 @@ enum ExpressionType {
 
 struct Expression {
     enum ExpressionType type;
-    struct Operation* lhs;
-    struct Operation* rhs;
+    float number;
+    struct Expression* lhs;
+    struct Expression* rhs;
 };
 
 struct Expression* create_expr();
