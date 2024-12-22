@@ -8,6 +8,10 @@
 
 unsigned char line = 0;
 
+void initialize_console() {
+    clg();
+}
+
 void print(const char* str) {
     for (unsigned char i = 0, col = 0; str[i]; ++i, ++col) {
         if (col >= 16) {
@@ -18,7 +22,13 @@ void print(const char* str) {
             }
         }
 
-        if (str[i] != ' ') {
+        if (str[i] == '\n') {
+            col = 0;
+            if (++line >= 8) {
+                clg();
+                line = 0;
+            }
+        } else if (str[i] != ' ') {
             char sprite[9];
             sprite[0] = 5;
             sprite[1] = 7;
@@ -31,4 +41,8 @@ void print(const char* str) {
         clg();
         line = 0;
     }
+}
+
+void read(char* str, unsigned char size) {
+
 }
