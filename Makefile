@@ -17,13 +17,7 @@ libraries := -lm
 default: symbol$(out_ext)
 .PHONY: default
 
-obj/console_0$(obj_ext): ./console.c ./console.h
-	@printf '\033[1m[POLYBUILD]\033[0m Compiling $@ from $<...\n'
-	@mkdir -p obj
-	@$(compiler) -c $< $(compilation_flags) -o $@
-	@printf '\033[1m[POLYBUILD]\033[0m Finished compiling $@ from $<!\n'
-
-obj/main_0$(obj_ext): ./main.c ./console.h
+obj/main_0$(obj_ext): ./main.c ./console.h ./parser.h
 	@printf '\033[1m[POLYBUILD]\033[0m Compiling $@ from $<...\n'
 	@mkdir -p obj
 	@$(compiler) -c $< $(compilation_flags) -o $@
@@ -41,7 +35,13 @@ obj/parser_0$(obj_ext): ./parser.c ./parser.h ./console.h
 	@$(compiler) -c $< $(compilation_flags) -o $@
 	@printf '\033[1m[POLYBUILD]\033[0m Finished compiling $@ from $<!\n'
 
-symbol$(out_ext): obj/console_0$(obj_ext) obj/main_0$(obj_ext) obj/characters_0$(obj_ext) obj/parser_0$(obj_ext)
+obj/console_0$(obj_ext): ./console.c ./console.h
+	@printf '\033[1m[POLYBUILD]\033[0m Compiling $@ from $<...\n'
+	@mkdir -p obj
+	@$(compiler) -c $< $(compilation_flags) -o $@
+	@printf '\033[1m[POLYBUILD]\033[0m Finished compiling $@ from $<!\n'
+
+symbol$(out_ext): obj/main_0$(obj_ext) obj/characters_0$(obj_ext) obj/parser_0$(obj_ext) obj/console_0$(obj_ext)
 	@printf '\033[1m[POLYBUILD]\033[0m Building $@...\n'
 	@$(compiler) $^ $(static_libraries) $(compilation_flags) $(libraries) -o $@
 	@printf '\033[1m[POLYBUILD]\033[0m Finished building $@!\n'

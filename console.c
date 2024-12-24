@@ -94,9 +94,10 @@ void read_line(char* str, unsigned char size) {
             unsigned char sprite[9];
             sprite[0] = 5;
             sprite[1] = 7;
-            memcpy(sprite + 2, get_char_sprite(str[i]), 7);
+            memcpy(sprite + 2, get_char_sprite(key), 7);
             putsprite(SPR_OR, col * 6, line * 8, sprite);
         }
+        str[i] = key;
     }
     str[i] = 0;
 
@@ -128,14 +129,12 @@ const char* number_to_string(float value) {
         *ptr++ = int_str[--i];
     }
 
-    if (fraction > 0.001f) {
-        *ptr++ = '.';
-        do {
-            fraction *= 10;
-            int digit = (int) fraction;
-            *ptr++ = '0' + digit;
-            fraction -= digit;
-        } while (fraction > 0.001f);
+    *ptr++ = '.';
+    for (unsigned char i = 0; i < 6; ++i) {
+        fraction *= 10;
+        int digit = (int) fraction;
+        *ptr++ = '0' + digit;
+        fraction -= digit;
     }
 
     *ptr = '\0';

@@ -2,17 +2,21 @@
 
 // #include "parser.h"
 #include "console.h"
+#include "parser.h"
 
 int main(void) {
     initialize_console();
 
-    char buf[8];
-    read_line(buf, 8);
-    print(buf);
-    print(buf);
-    print(buf);
+    char buf[20];
+    read_line(buf, 20);
+    print("");
+    print("");
+    print("");
 
-    print(number_to_string(buf[0]));
+    struct Expression* expr;
+    const char* ptr = buf;
+    parse(&expr, &ptr, EXPRESSION_NONE);
+    print(number_to_string(evaluate_expression(expr)));
 
     return 0;
 }
