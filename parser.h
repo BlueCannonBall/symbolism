@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 enum ExpressionType {
     EXPRESSION_NONE = 0,
     EXPRESSION_ADD,
@@ -16,7 +18,7 @@ struct Expression {
     struct Expression* rhs;
 };
 
-struct Expression* create_expr();
-void reset_expr_heap();
+struct Expression* create_expr(void);
+void reset_expr_heap(void);
 float read_number(const char** str);
-struct Expression* parse(const char** str);
+bool parse(struct Expression** result, const char** str, enum ExpressionType last_operator);
