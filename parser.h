@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _PARSER_H
+#define _PARSER_H
 
 #include <stdbool.h>
 
@@ -22,3 +23,5 @@ struct Expression* create_expr(void);
 void reset_expr_heap(void);
 float read_number(const char** str);
 bool parse(struct Expression** result, const char** str, enum ExpressionType last_operator);
+
+#endif

@@ -2,10 +2,8 @@
 #include "console.h"
 #include <ctype.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "console.h"
 
 unsigned char expr_cursor = 0;
 
@@ -103,6 +101,7 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
         // after the number/expression there might be an operator, closed parenthesis, or EOI
         enum ExpressionType operator;
         switch (**str) {
+<<<<<<< HEAD
             case '+':
                 operator = EXPRESSION_ADD;
                 break;
@@ -127,6 +126,29 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
             default:
                 puts("Expected operator, end of input, or closed parenthesis!");
                 break;
+=======
+        case '+':
+            operator= EXPRESSION_ADD;
+            break;
+        case '-':
+            operator= EXPRESSION_SUBTRACT;
+            break;
+        case '*':
+            operator= EXPRESSION_MULTIPLY;
+            break;
+        case '/':
+            operator= EXPRESSION_DIVIDE;
+            break;
+        case '^':
+            operator= EXPRESSION_EXPONENTIATE;
+            break;
+        case ')':
+        case 0: {
+            // if there's a closed parenthesis or EOI, we can just return a root
+            *result = lhs;
+            return false;
+        }
+>>>>>>> 522b1ef9dcbbe1ef72a6709c2a3217311a663a3e
         }
 
         // if the operator we've received is lower than our starting operator,

@@ -11,7 +11,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 compiler := zcc
-compilation_flags := +ti83p -create-app -startup=10 -compiler=sdcc -O3
+compilation_flags := +ti83p -create-app -startup=10 -O3
 libraries := -lm
 
 default: symbol$(out_ext)
@@ -35,7 +35,7 @@ obj/characters_0$(obj_ext): ./characters.c ./console.h
 	@$(compiler) -c $< $(compilation_flags) -o $@
 	@printf '\033[1m[POLYBUILD]\033[0m Finished compiling $@ from $<!\n'
 
-obj/parser_0$(obj_ext): ./parser.c ./parser.h
+obj/parser_0$(obj_ext): ./parser.c ./parser.h ./console.h
 	@printf '\033[1m[POLYBUILD]\033[0m Compiling $@ from $<...\n'
 	@mkdir -p obj
 	@$(compiler) -c $< $(compilation_flags) -o $@

@@ -5,7 +5,7 @@
 
 int main(void) {
     initialize_console();
-    
+
     char buf[8];
     read_line(buf, 8);
     print(buf);
