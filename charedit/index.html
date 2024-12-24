@@ -98,7 +98,7 @@
 
       // Generate case statement
       const cCode = `case '${char}': {
-    static const char sprite_${char}[] = {
+    static const unsigned char sprite_${char}[] = {
         ${bits.map(b => `0x${b.toString(16).toUpperCase().padStart(2, "0")},`).join("\n        ")}
     };
     return sprite_${char};

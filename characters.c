@@ -1,9 +1,9 @@
 #include "console.h"
 
-const char* get_char_sprite(char c) {
+const unsigned char* get_char_sprite(char c) {
     switch (c) {
     case '0': {
-        static const char sprite_0[] = {
+        static const unsigned char sprite_0[] = {
             0x70,
             0x88,
             0x98,
@@ -16,7 +16,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '1': {
-        static const char sprite_1[] = {
+        static const unsigned char sprite_1[] = {
             0x20,
             0x60,
             0x20,
@@ -29,7 +29,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '2': {
-        static const char sprite_2[] = {
+        static const unsigned char sprite_2[] = {
             0x70,
             0x88,
             0x08,
@@ -42,7 +42,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '3': {
-        static const char sprite_3[] = {
+        static const unsigned char sprite_3[] = {
             0x70,
             0x88,
             0x08,
@@ -55,7 +55,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '4': {
-        static const char sprite_4[] = {
+        static const unsigned char sprite_4[] = {
             0x90,
             0x90,
             0x90,
@@ -68,7 +68,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '5': {
-        static const char sprite_5[] = {
+        static const unsigned char sprite_5[] = {
             0xF8,
             0x80,
             0xF0,
@@ -81,7 +81,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '6': {
-        static const char sprite_6[] = {
+        static const unsigned char sprite_6[] = {
             0x30,
             0x40,
             0x80,
@@ -94,7 +94,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '7': {
-        static const char sprite_7[] = {
+        static const unsigned char sprite_7[] = {
             0xF8,
             0x08,
             0x10,
@@ -107,7 +107,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '8': {
-        static const char sprite_8[] = {
+        static const unsigned char sprite_8[] = {
             0x70,
             0x88,
             0x88,
@@ -120,7 +120,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '9': {
-        static const char sprite_9[] = {
+        static const unsigned char sprite_9[] = {
             0x70,
             0x88,
             0x88,
@@ -133,7 +133,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'x': {
-        static const char sprite_x[] = {
+        static const unsigned char sprite_x[] = {
             0x00,
             0x00,
             0x88,
@@ -146,7 +146,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'y': {
-        static const char sprite_y[] = {
+        static const unsigned char sprite_y[] = {
             0x00,
             0x00,
             0x88,
@@ -159,7 +159,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'z': {
-        static const char sprite_z[] = {
+        static const unsigned char sprite_z[] = {
             0x00,
             0x00,
             0xF8,
@@ -172,7 +172,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '.': {
-        static const char sprite_dot[] = {
+        static const unsigned char sprite_dot[] = {
             0x00,
             0x00,
             0x00,
@@ -185,7 +185,7 @@ const char* get_char_sprite(char c) {
     }
 
     case ',': {
-        static const char sprite_comma[] = {
+        static const unsigned char sprite_comma[] = {
             0x00,
             0x00,
             0x00,
@@ -198,7 +198,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '!': {
-        static const char sprite_exclamation[] = {
+        static const unsigned char sprite_exclamation[] = {
             0x70,
             0x70,
             0x70,
@@ -211,7 +211,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '?': {
-        static const char sprite_question[] = {
+        static const unsigned char sprite_question[] = {
             0x70,
             0x88,
             0x08,
@@ -224,7 +224,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '+': {
-        static const char sprite_plus[] = {
+        static const unsigned char sprite_plus[] = {
             0x00,
             0x20,
             0x20,
@@ -237,7 +237,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '-': {
-        static const char sprite_minus[] = {
+        static const unsigned char sprite_minus[] = {
             0x00,
             0x00,
             0x00,
@@ -250,7 +250,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '*': {
-        static const char sprite_multiply[] = {
+        static const unsigned char sprite_multiply[] = {
             0x00,
             0x00,
             0x50,
@@ -263,7 +263,7 @@ const char* get_char_sprite(char c) {
     }
 
     case '/': {
-        static const char sprite_divide[] = {
+        static const unsigned char sprite_divide[] = {
             0x00,
             0x08,
             0x10,
@@ -276,7 +276,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'a': {
-        static const char sprite_a[] = {
+        static const unsigned char sprite_a[] = {
             0x00,
             0x00,
             0x70,
@@ -289,7 +289,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'b': {
-        static const char sprite_b[] = {
+        static const unsigned char sprite_b[] = {
             0x80,
             0x80,
             0x80,
@@ -302,7 +302,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'c': {
-        static const char sprite_c[] = {
+        static const unsigned char sprite_c[] = {
             0x00,
             0x00,
             0x78,
@@ -315,7 +315,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'd': {
-        static const char sprite_d[] = {
+        static const unsigned char sprite_d[] = {
             0x08,
             0x08,
             0x08,
@@ -328,7 +328,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'e': {
-        static const char sprite_e[] = {
+        static const unsigned char sprite_e[] = {
             0x00,
             0x00,
             0x70,
@@ -341,7 +341,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'f': {
-        static const char sprite_f[] = {
+        static const unsigned char sprite_f[] = {
             0x30,
             0x40,
             0x40,
@@ -354,7 +354,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'g': {
-        static const char sprite_g[] = {
+        static const unsigned char sprite_g[] = {
             0x00,
             0x78,
             0x88,
@@ -367,7 +367,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'h': {
-        static const char sprite_h[] = {
+        static const unsigned char sprite_h[] = {
             0x80,
             0x80,
             0x80,
@@ -380,7 +380,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'i': {
-        static const char sprite_i[] = {
+        static const unsigned char sprite_i[] = {
             0x00,
             0x20,
             0x00,
@@ -393,7 +393,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'j': {
-        static const char sprite_j[] = {
+        static const unsigned char sprite_j[] = {
             0x00,
             0x10,
             0x00,
@@ -406,7 +406,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'k': {
-        static const char sprite_k[] = {
+        static const unsigned char sprite_k[] = {
             0x80,
             0x80,
             0x90,
@@ -419,7 +419,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'l': {
-        static const char sprite_l[] = {
+        static const unsigned char sprite_l[] = {
             0x60,
             0x20,
             0x20,
@@ -432,7 +432,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'm': {
-        static const char sprite_m[] = {
+        static const unsigned char sprite_m[] = {
             0x00,
             0x00,
             0xF0,
@@ -445,7 +445,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'n': {
-        static const char sprite_n[] = {
+        static const unsigned char sprite_n[] = {
             0x00,
             0x00,
             0xB0,
@@ -458,7 +458,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'o': {
-        static const char sprite_o[] = {
+        static const unsigned char sprite_o[] = {
             0x00,
             0x00,
             0x70,
@@ -471,7 +471,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'p': {
-        static const char sprite_p[] = {
+        static const unsigned char sprite_p[] = {
             0x00,
             0x70,
             0x88,
@@ -484,7 +484,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'q': {
-        static const char sprite_q[] = {
+        static const unsigned char sprite_q[] = {
             0x00,
             0x70,
             0x88,
@@ -497,7 +497,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'r': {
-        static const char sprite_r[] = {
+        static const unsigned char sprite_r[] = {
             0x00,
             0x00,
             0xB8,
@@ -510,7 +510,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 's': {
-        static const char sprite_s[] = {
+        static const unsigned char sprite_s[] = {
             0x00,
             0x00,
             0x78,
@@ -523,7 +523,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 't': {
-        static const char sprite_t[] = {
+        static const unsigned char sprite_t[] = {
             0x20,
             0x20,
             0x70,
@@ -536,7 +536,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'u': {
-        static const char sprite_u[] = {
+        static const unsigned char sprite_u[] = {
             0x00,
             0x00,
             0x88,
@@ -549,7 +549,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'v': {
-        static const char sprite_v[] = {
+        static const unsigned char sprite_v[] = {
             0x00,
             0x00,
             0x88,
@@ -562,7 +562,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'w': {
-        static const char sprite_w[] = {
+        static const unsigned char sprite_w[] = {
             0x00,
             0x00,
             0x88,
@@ -575,7 +575,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'A': {
-        static const char sprite_A[] = {
+        static const unsigned char sprite_A[] = {
             0x20,
             0x50,
             0x88,
@@ -588,7 +588,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'B': {
-        static const char sprite_B[] = {
+        static const unsigned char sprite_B[] = {
             0xF0,
             0x88,
             0x88,
@@ -601,7 +601,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'C': {
-        static const char sprite_C[] = {
+        static const unsigned char sprite_C[] = {
             0x70,
             0x88,
             0x80,
@@ -614,7 +614,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'D': {
-        static const char sprite_D[] = {
+        static const unsigned char sprite_D[] = {
             0xF0,
             0x88,
             0x88,
@@ -627,7 +627,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'E': {
-        static const char sprite_E[] = {
+        static const unsigned char sprite_E[] = {
             0xF8,
             0x80,
             0x80,
@@ -640,7 +640,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'F': {
-        static const char sprite_F[] = {
+        static const unsigned char sprite_F[] = {
             0xF8,
             0x80,
             0x80,
@@ -653,7 +653,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'G': {
-        static const char sprite_G[] = {
+        static const unsigned char sprite_G[] = {
             0x70,
             0x88,
             0x80,
@@ -666,7 +666,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'H': {
-        static const char sprite_H[] = {
+        static const unsigned char sprite_H[] = {
             0x88,
             0x88,
             0x88,
@@ -679,7 +679,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'I': {
-        static const char sprite_I[] = {
+        static const unsigned char sprite_I[] = {
             0x70,
             0x20,
             0x20,
@@ -692,7 +692,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'J': {
-        static const char sprite_J[] = {
+        static const unsigned char sprite_J[] = {
             0xF8,
             0x20,
             0x20,
@@ -705,7 +705,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'K': {
-        static const char sprite_K[] = {
+        static const unsigned char sprite_K[] = {
             0x88,
             0x90,
             0xA0,
@@ -718,7 +718,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'L': {
-        static const char sprite_L[] = {
+        static const unsigned char sprite_L[] = {
             0x80,
             0x80,
             0x80,
@@ -731,7 +731,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'M': {
-        static const char sprite_M[] = {
+        static const unsigned char sprite_M[] = {
             0x88,
             0xD8,
             0xA8,
@@ -744,7 +744,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'N': {
-        static const char sprite_N[] = {
+        static const unsigned char sprite_N[] = {
             0x88,
             0x88,
             0xC8,
@@ -757,7 +757,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'O': {
-        static const char sprite_O[] = {
+        static const unsigned char sprite_O[] = {
             0x70,
             0x88,
             0x88,
@@ -770,7 +770,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'P': {
-        static const char sprite_P[] = {
+        static const unsigned char sprite_P[] = {
             0xF0,
             0x88,
             0x88,
@@ -783,7 +783,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'Q': {
-        static const char sprite_Q[] = {
+        static const unsigned char sprite_Q[] = {
             0x70,
             0x88,
             0x88,
@@ -796,7 +796,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'R': {
-        static const char sprite_R[] = {
+        static const unsigned char sprite_R[] = {
             0xF0,
             0x88,
             0x88,
@@ -809,7 +809,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'S': {
-        static const char sprite_S[] = {
+        static const unsigned char sprite_S[] = {
             0x78,
             0x80,
             0x80,
@@ -822,7 +822,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'T': {
-        static const char sprite_T[] = {
+        static const unsigned char sprite_T[] = {
             0xF8,
             0x20,
             0x20,
@@ -835,7 +835,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'U': {
-        static const char sprite_U[] = {
+        static const unsigned char sprite_U[] = {
             0x88,
             0x88,
             0x88,
@@ -848,7 +848,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'V': {
-        static const char sprite_V[] = {
+        static const unsigned char sprite_V[] = {
             0x88,
             0x88,
             0x88,
@@ -861,7 +861,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'W': {
-        static const char sprite_W[] = {
+        static const unsigned char sprite_W[] = {
             0x88,
             0x88,
             0xA8,
@@ -874,7 +874,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'X': {
-        static const char sprite_X[] = {
+        static const unsigned char sprite_X[] = {
             0x88,
             0x88,
             0x50,
@@ -887,7 +887,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'Y': {
-        static const char sprite_Y[] = {
+        static const unsigned char sprite_Y[] = {
             0x88,
             0x88,
             0x88,
@@ -900,7 +900,7 @@ const char* get_char_sprite(char c) {
     }
 
     case 'Z': {
-        static const char sprite_Z[] = {
+        static const unsigned char sprite_Z[] = {
             0xF8,
             0x08,
             0x10,
@@ -913,33 +913,33 @@ const char* get_char_sprite(char c) {
     }
 
     case '(': {
-        static const char sprite_parenthesis1[] = {
-            0x30,
+        static const unsigned char sprite_parenthesis1[] = {
+            0x10,
+            0x20,
             0x40,
             0x40,
             0x40,
-            0x40,
-            0x40,
-            0x30,
+            0x20,
+            0x10,
         };
         return sprite_parenthesis1;
     }
 
     case ')': {
-        static const char sprite_parenthesis2[] = {
-            0x60,
+        static const unsigned char sprite_parenthesis2[] = {
+            0x40,
+            0x20,
             0x10,
             0x10,
             0x10,
-            0x10,
-            0x10,
-            0x60,
+            0x20,
+            0x40,
         };
         return sprite_parenthesis2;
     }
 
     case '^': {
-        static const char sprite_caret[] = {
+        static const unsigned char sprite_caret[] = {
             0x20,
             0x50,
             0x88,
@@ -952,7 +952,7 @@ const char* get_char_sprite(char c) {
     }
 
     default: {
-        static const char sprite_none[] = {
+        static const unsigned char sprite_none[] = {
             0xD8,
             0xD8,
             0x00,

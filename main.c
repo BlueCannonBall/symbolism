@@ -3,9 +3,16 @@
 // #include "parser.h"
 #include "console.h"
 
-int main() {
+int main(void) {
     initialize_console();
-    print("THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG.");
-    print("The quick brown fox jumped over the lazy dog.");
+    
+    char buf[8];
+    read_line(buf, 8);
+    print(buf);
+    print(buf);
+    print(buf);
+
+    print(number_to_string(buf[0]));
+
     return 0;
 }
