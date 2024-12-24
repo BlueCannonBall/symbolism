@@ -2,7 +2,7 @@
 #define _CONSOLE_H
 
 enum SpecialKey {
-	SPECIAL_KEY_NONE,
+    SPECIAL_KEY_NONE = 0,
     SPECIAL_KEY_SIN,
     SPECIAL_KEY_ARCSIN,
     SPECIAL_KEY_COS,

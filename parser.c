@@ -1,18 +1,17 @@
 #include "parser.h"
+#include "console.h"
 #include <ctype.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "console.h"
 
 unsigned char expr_cursor = 0;
 
 struct Expression* create_expr(void) {
-    static struct Expression exprs[64] = {0}; // 64 expressions MAXIMUM at ALL TIMES
+    static struct Expression exprs[64]; // 64 expressions MAXIMUM at ALL TIMES
     struct Expression* ret = &exprs[expr_cursor++];
     if (expr_cursor >= 64) {
-        puts("=== HEAP FAILURE ===");
+        print("==MEM EXCEPTION==");
         exit(EXIT_FAILURE);
     }
     memset(ret, 0, sizeof(struct Expression));
@@ -59,18 +58,18 @@ float read_number(const char** str) {
 unsigned char operator_value(enum ExpressionType operator) {
     // ranking: ADD/SUBTRACT, DIVIDE/MULTIPLY, EXPONENTIATE, PARENTHESIS
     switch (operator) {
-        case EXPRESSION_NONE:
-            return 0;
-        case EXPRESSION_EXPONENTIATE:
-            return 3;
-        case EXPRESSION_MULTIPLY:
-        case EXPRESSION_DIVIDE:
-            return 2;
-        case EXPRESSION_ADD:
-        case EXPRESSION_SUBTRACT:
-            return 1;
-        default:
-            return 0;
+    case EXPRESSION_NONE:
+        return 0;
+    case EXPRESSION_EXPONENTIATE:
+        return 3;
+    case EXPRESSION_MULTIPLY:
+    case EXPRESSION_DIVIDE:
+        return 2;
+    case EXPRESSION_ADD:
+    case EXPRESSION_SUBTRACT:
+        return 1;
+    default:
+        return 0;
     }
 }
 
@@ -91,7 +90,7 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
         parse(&lhs, str, EXPRESSION_NONE);
         // after that, there should be a closed parenthesis
         if (**str != ')') {
-            puts("==PARSING EXCEPTION==");
+            print("==PARSING EXCEPTION==");
         }
 
         // need to get whatever is after the closed parenthesis
@@ -102,27 +101,27 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
         // after the number/expression there might be an operator, closed parenthesis, or EOI
         enum ExpressionType operator;
         switch (**str) {
-            case '+':
-                operator = EXPRESSION_ADD;
-                break;
-            case '-':
-                operator = EXPRESSION_SUBTRACT;
-                break;
-            case '*':
-                operator = EXPRESSION_MULTIPLY;
-                break;
-            case '/':
-                operator = EXPRESSION_DIVIDE;
-                break;
-            case '^':
-                operator = EXPRESSION_EXPONENTIATE;
-                break;
-            case ')':
-            case 0: {
-                // if there's a closed parenthesis or EOI, we can just return a root
-                *result = lhs;
-                return false;
-            }
+        case '+':
+            operator= EXPRESSION_ADD;
+            break;
+        case '-':
+            operator= EXPRESSION_SUBTRACT;
+            break;
+        case '*':
+            operator= EXPRESSION_MULTIPLY;
+            break;
+        case '/':
+            operator= EXPRESSION_DIVIDE;
+            break;
+        case '^':
+            operator= EXPRESSION_EXPONENTIATE;
+            break;
+        case ')':
+        case 0: {
+            // if there's a closed parenthesis or EOI, we can just return a root
+            *result = lhs;
+            return false;
+        }
         }
 
         // if the operator we've received is lower than our starting operator,
