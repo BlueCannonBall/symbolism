@@ -123,11 +123,14 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
                 *result = lhs;
                 return false;
             }
+            default:
+                puts("Expected operator, end of input, or closed parenthesis!");
+                break;
         }
 
         // if the operator we've received is lower than our starting operator,
         // we must stop and make the expression we've constructed so far the new lhs
-        if (operator_value(operator) < operator_value(last_operator)) {
+        if (operator_value(operator) <= operator_value(last_operator)) {
             *result = lhs;
             return true;
         }
