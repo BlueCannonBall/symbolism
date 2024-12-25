@@ -76,6 +76,31 @@ unsigned char operator_value(enum ExpressionType operator) {
     }
 }
 
+// Create a new Expression of type number
+struct Expression* create_number(float value) {
+    struct Expression* expr = create_expr();
+    expr->type = EXPRESSION_NUMBER;
+    expr->number = value;
+    return expr;
+}
+
+// Create a new Expression of type variable
+struct Expression* create_variable(char variable) {
+    struct Expression* expr = create_expr();
+    expr->type = EXPRESSION_VARIABLE;
+    expr->variable = variable;
+    return expr;
+}
+
+// Create a new Expression of a binary operation
+struct Expression* create_binary(enum ExpressionType type, struct Expression* lhs, struct Expression* rhs) {
+    struct Expression* expr = create_expr();
+    expr->type = type;
+    expr->lhs = lhs;
+    expr->rhs = rhs;
+    return expr;
+}
+
 // Returns a bool stating whether the parsing process was interrupted
 bool parse(struct Expression** result, const char** str, enum ExpressionType last_operator) {
     // STEP 1: PARSE THE FIRST OPERAND OF THE EXPRESSION
@@ -86,9 +111,7 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
     struct Expression* lhs;
     if (isdigit(**str) || **str == '-') {
         // 1. NUMBER
-        lhs = create_expr();
-        lhs->type = EXPRESSION_NUMBER;
-        lhs->number = read_number(str);
+        lhs = create_number(read_number(str));
     } else if (**str == '(') {
         // 2. AN EXPRESSION
         ++*str;
@@ -102,9 +125,7 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
         ++*str;
     } else if (isalpha(**str)) {
         // 3. A VARIABLE
-        lhs = create_expr();
-        lhs->type = EXPRESSION_VARIABLE;
-        lhs->variable = **str;
+        lhs = create_variable(**str);
 
         // need to get whatever is after the variable
         ++*str;
@@ -163,18 +184,10 @@ bool parse(struct Expression** result, const char** str, enum ExpressionType las
         struct Expression* rhs;
         bool was_interrupted = parse(&rhs, str, operator);
         if (was_interrupted) {
-            struct Expression* new_lhs = create_expr();
-            new_lhs->lhs = lhs;
-            new_lhs->rhs = rhs;
-            new_lhs->type = operator;
-            lhs = new_lhs;
+            lhs = create_binary(operator, lhs, rhs);
             continue;
         } else {
-            struct Expression* final = create_expr();
-            final->lhs = lhs;
-            final->rhs = rhs;
-            final->type = operator;
-            *result = final;
+            *result = create_binary(operator, lhs, rhs);
             return false;
         }
     }
@@ -319,6 +332,16 @@ bool try_parse_polynomial_term(struct PolynomialTerm* result, const struct Expre
 
     return false;
 }
+
+// (2*x)
+// becomes Term { coefficient: 2, variables: [x, 1] }
+// (2*x)*(2*(x*y))
+// (2*x) becomes Term { coefficient: 2, variables: [x, 1] }
+// (x*y) becomes Term { coefficient: 1, variables: [x, 1, y, 1]
+// 2*(x*y) becomes
+struct Term {
+
+};
 
 struct Expression* simplify_expression(const struct Expression* expr) {
     struct Expression* out = create_expr();
