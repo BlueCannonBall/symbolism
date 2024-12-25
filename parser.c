@@ -234,6 +234,7 @@ float powf_approx(float a, float b) {
     }
 }
 
+// Evaluate an expression. All variables will be replaced with zeros.
 float evaluate_expression(const struct Expression* expr) {
     switch (expr->type) {
         case EXPRESSION_NUMBER:
@@ -252,4 +253,148 @@ float evaluate_expression(const struct Expression* expr) {
         case EXPRESSION_EXPONENTIATE:
             return powf_approx(evaluate_expression(expr->lhs), evaluate_expression(expr->rhs));
     }
+}
+
+struct PolynomialTerm {
+    float coefficient;
+    char variable;
+    double power;
+};
+
+// Despite the name "parse", no parsing really occurs here. This function operates on an already parsed `struct Expression*`
+bool try_parse_polynomial_term(struct PolynomialTerm* result, const struct Expression* expr) {
+    // the expr must be a multiplication or a single variable
+    if (expr->type == EXPRESSION_VARIABLE) {
+        result->coefficient = 1.0;
+        result->variable = expr->variable;
+        result->power = 1.0;
+        return true;
+    } else if (expr->type == EXPRESSION_NUMBER) {
+        result->coefficient = expr->number;
+        result->variable = 0; // it doesn't actually matter in this case
+        result->power = 0.0;
+        return true;
+
+    } else if (expr->type != EXPRESSION_MULTIPLY) {
+        return false;
+    }
+
+    // one side must be a number
+    const struct Expression* number = NULL;
+    if (expr->lhs->type == EXPRESSION_NUMBER) {
+        number = expr->lhs;
+    } else if (expr->rhs->type == EXPRESSION_NUMBER) {
+        number = expr->rhs;
+    }
+
+    // another side must be a variable...
+    const struct Expression* variable = NULL;
+    if (expr->lhs->type == EXPRESSION_VARIABLE) {
+        variable = expr->lhs;
+    } else if (expr->rhs->type == EXPRESSION_VARIABLE) {
+        variable = expr->rhs;
+    }
+
+    // ... or an exponent with a constant power
+    const struct Expression* power = NULL;
+    if (expr->lhs->type == EXPRESSION_EXPONENTIATE && expr->lhs->lhs->type == EXPRESSION_VARIABLE && expr->lhs->rhs->type == EXPRESSION_NUMBER) {
+        variable = expr->lhs->lhs;
+        power = expr->lhs->rhs;
+    } else if (expr->rhs->type == EXPRESSION_EXPONENTIATE && expr->rhs->lhs->type == EXPRESSION_VARIABLE && expr->rhs->rhs->type == EXPRESSION_NUMBER) {
+        variable = expr->rhs->lhs;
+        power = expr->rhs->rhs;
+    }
+
+    if (number && variable) {
+        result->variable = variable->variable;
+        result->coefficient = number->number;
+        if (power) {
+            result->power = power->number;
+        } else {
+            result->power = 0.0f;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+struct Expression* simplify_expression(const struct Expression* expr) {
+    struct Expression* out = create_expr();
+    switch (expr->type) {
+        // nothing we can do here!
+        case EXPRESSION_VARIABLE:
+        case EXPRESSION_NONE:
+        case EXPRESSION_NUMBER:
+            *out = *expr;
+            break;
+        case EXPRESSION_MULTIPLY: {
+            // we can simplify a multiplication if there are constants/exponents to be collapsed
+            // e.g. (x) * (x) = x^2
+            // e.g. (2*x) * (x) = 2*x^2
+            // e.g. (2*x) * (3*x) = 6*x^2
+            // e.g. (2*x) * (3*y) = 6*(x*y)
+
+            // Simplify lhs and rhs
+            struct Expression* new_lhs = simplify_expression(expr->lhs);
+            struct Expression* new_rhs = simplify_expression(expr->rhs);
+
+            struct PolynomialTerm lhs_polynomial;
+            struct PolynomialTerm rhs_polynomial;
+
+            out->type = EXPRESSION_NUMBER;
+
+            // CASE 1: BOTH SIDES ARE JUST CONSTANTS
+            if (new_lhs->type == EXPRESSION_NUMBER && new_rhs->type == EXPRESSION_NUMBER) {
+                out->number = new_lhs->number * new_rhs->number;
+                break;
+            }
+
+            out->type = EXPRESSION_MULTIPLY;
+
+            if (try_parse_polynomial_term(&lhs_polynomial, new_lhs) && try_parse_polynomial_term(&rhs_polynomial, new_rhs)) {
+                if ((lhs_polynomial.variable == rhs_polynomial.variable) || (lhs_polynomial.power == 0.0 || rhs_polynomial.power == 0.0)) {
+                    // one of the terms might have a power of zero, in which case there is no variable
+                    // .. TODO
+                    // combine the terms
+                    float new_power = lhs_polynomial.power + rhs_polynomial.power;
+                    float new_coefficient = lhs_polynomial.coefficient * rhs_polynomial.coefficient;
+
+                    new_lhs = create_expr();
+                    new_lhs->type = EXPRESSION_NUMBER;
+                    new_lhs->number = new_coefficient;
+
+                    new_rhs = create_expr();
+                    if (new_power == 1.0) {
+                        new_rhs->type = EXPRESSION_VARIABLE;
+                        new_rhs->variable = lhs_polynomial.variable; // doesn't matter whether it's lhs or rhs!
+                    } else {
+                        new_rhs->type = EXPRESSION_EXPONENTIATE;
+                        new_rhs->lhs = create_expr();
+                        new_rhs->lhs->type = EXPRESSION_VARIABLE;
+                        new_rhs->lhs->variable = lhs_polynomial.variable; // doesn't matter whether it's lhs or rhs!
+                        new_rhs->rhs = create_expr();
+                        new_rhs->rhs->type = EXPRESSION_NUMBER;
+                        new_rhs->rhs->number = new_power;
+                    }
+
+                    out->lhs = new_lhs;
+                    out->rhs = new_rhs;
+                    break;
+                } else {
+                    // This is the most complicated case: (2*x) * (3*y) = 6*(x*y)
+                    print("Not implemented!");
+                    break;
+                }
+            } else {
+                // Don't do any combining
+                out->lhs = new_lhs;
+                out->rhs = new_rhs;
+                break;
+            }
+        }
+    }
+
+    return out;
 }
