@@ -27,5 +27,8 @@ void reset_expr_heap(void);
 float read_number(const char** str);
 bool parse(struct Expression** result, const char** str, enum ExpressionType last_operator);
 float evaluate_expression(const struct Expression* expr);
+struct Expression* differentiate(const struct Expression* expr, char independent_variable);
+void format_expression(struct Expression* expr, char** buffer);
+struct Expression* simplify_expression(const struct Expression* expr);
 
 #endif

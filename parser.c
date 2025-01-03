@@ -1,17 +1,18 @@
 #include "parser.h"
-#include "console.h"
+//#include "console.h"
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "console.h"
+#include <stdio.h>
+#include "console.h"
 
 unsigned char expr_cursor = 0;
 
 struct Expression* create_expr(void) {
-    static struct Expression exprs[64]; // 64 expressions MAXIMUM at ALL TIMES
+    static struct Expression exprs[128]; // 64 expressions MAXIMUM at ALL TIMES
     struct Expression* ret = &exprs[expr_cursor++];
-    if (expr_cursor >= 64) {
+    if (expr_cursor >= 128) {
         print("==MEM EXCEPTION==");
         exit(EXIT_FAILURE);
     }
@@ -99,6 +100,18 @@ struct Expression* create_binary(enum ExpressionType type, struct Expression* lh
     expr->lhs = lhs;
     expr->rhs = rhs;
     return expr;
+}
+
+// Create a copy of an Expression
+struct Expression* create_copy(const struct Expression* expr) {
+    if (!expr) return NULL;
+    struct Expression* expr2 = create_expr();
+    expr2->type = expr->type;
+    expr2->number = expr->number;
+    expr2->variable = expr->variable;
+    expr2->lhs = create_copy(expr->lhs);
+    expr2->rhs = create_copy(expr->rhs);
+    return expr2;
 }
 
 // Returns a bool stating whether the parsing process was interrupted
@@ -268,156 +281,228 @@ float evaluate_expression(const struct Expression* expr) {
     }
 }
 
-struct PolynomialTerm {
-    float coefficient;
-    char variable;
-    double power;
-};
-
-// Despite the name "parse", no parsing really occurs here. This function operates on an already parsed `struct Expression*`
-bool try_parse_polynomial_term(struct PolynomialTerm* result, const struct Expression* expr) {
-    // the expr must be a multiplication or a single variable
-    if (expr->type == EXPRESSION_VARIABLE) {
-        result->coefficient = 1.0;
-        result->variable = expr->variable;
-        result->power = 1.0;
-        return true;
-    } else if (expr->type == EXPRESSION_NUMBER) {
-        result->coefficient = expr->number;
-        result->variable = 0; // it doesn't actually matter in this case
-        result->power = 0.0;
-        return true;
-
-    } else if (expr->type != EXPRESSION_MULTIPLY) {
-        return false;
-    }
-
-    // one side must be a number
-    const struct Expression* number = NULL;
-    if (expr->lhs->type == EXPRESSION_NUMBER) {
-        number = expr->lhs;
-    } else if (expr->rhs->type == EXPRESSION_NUMBER) {
-        number = expr->rhs;
-    }
-
-    // another side must be a variable...
-    const struct Expression* variable = NULL;
-    if (expr->lhs->type == EXPRESSION_VARIABLE) {
-        variable = expr->lhs;
-    } else if (expr->rhs->type == EXPRESSION_VARIABLE) {
-        variable = expr->rhs;
-    }
-
-    // ... or an exponent with a constant power
-    const struct Expression* power = NULL;
-    if (expr->lhs->type == EXPRESSION_EXPONENTIATE && expr->lhs->lhs->type == EXPRESSION_VARIABLE && expr->lhs->rhs->type == EXPRESSION_NUMBER) {
-        variable = expr->lhs->lhs;
-        power = expr->lhs->rhs;
-    } else if (expr->rhs->type == EXPRESSION_EXPONENTIATE && expr->rhs->lhs->type == EXPRESSION_VARIABLE && expr->rhs->rhs->type == EXPRESSION_NUMBER) {
-        variable = expr->rhs->lhs;
-        power = expr->rhs->rhs;
-    }
-
-    if (number && variable) {
-        result->variable = variable->variable;
-        result->coefficient = number->number;
-        if (power) {
-            result->power = power->number;
-        } else {
-            result->power = 0.0f;
+struct Expression* differentiate(const struct Expression* expr, char independent_variable) {
+    switch (expr->type) {
+        case EXPRESSION_NUMBER:
+            return create_number(0.0);
+        case EXPRESSION_VARIABLE: {
+            if (independent_variable == expr->variable) {
+                return create_number(1.0);
+            } else {
+                print("Unimplemented");
+                return NULL;
+            }
         }
-
-        return true;
+        case EXPRESSION_ADD:
+            return create_binary(EXPRESSION_ADD, differentiate(expr->lhs, independent_variable), differentiate(expr->rhs, independent_variable));
+        case EXPRESSION_SUBTRACT:
+            return create_binary(EXPRESSION_SUBTRACT, differentiate(expr->lhs, independent_variable), differentiate(expr->rhs, independent_variable));
+        case EXPRESSION_MULTIPLY:
+            // d/dx f(x) + g(x) = f'(x)*g(x) + f(x)*g'(x)
+            return create_binary(
+                EXPRESSION_ADD,
+                create_binary(
+                    EXPRESSION_MULTIPLY,
+                    differentiate(expr->lhs, independent_variable),
+                    create_copy(expr->rhs)
+                ),
+                create_binary(
+                    EXPRESSION_MULTIPLY,
+                    create_copy(expr->lhs),
+                    differentiate(expr->rhs, independent_variable)
+                )
+            );
+        case EXPRESSION_DIVIDE:
+            // d/dx [u(x)/v(x)] = (u'(x)v(x) - u(x)v'(x))/(v(x)^2)
+            return create_binary(
+                EXPRESSION_DIVIDE,
+                create_binary(
+                    EXPRESSION_SUBTRACT,
+                    create_binary(
+                        EXPRESSION_MULTIPLY,
+                        differentiate(expr->lhs, independent_variable),
+                        create_copy(expr->rhs)
+                    ),
+                    create_binary(
+                        EXPRESSION_MULTIPLY,
+                        create_copy(expr->lhs),
+                        differentiate(expr->rhs, independent_variable)
+                    )
+                ),
+                create_binary(
+                    EXPRESSION_EXPONENTIATE,
+                    create_copy(expr->rhs),
+                    create_number(2.0)
+                )
+            );
+        case EXPRESSION_EXPONENTIATE: {
+            // we only consider the case where the power is a number
+            if (expr->rhs->type != EXPRESSION_NUMBER) {
+                print("Exponents without numeric powers are undifferentiable");
+                return NULL;
+            }
+            // d/dx f(x)^n = n(f(x))^(n-1) * f'(x)
+            return create_binary(
+                EXPRESSION_MULTIPLY,
+                create_binary(
+                    EXPRESSION_MULTIPLY,
+                    create_number(expr->rhs->number), // n
+                    create_binary(
+                        EXPRESSION_EXPONENTIATE,
+                        create_copy(expr->lhs),       // f(x)
+                        create_number(expr->rhs->number - 1) // n - 1
+                    )
+                ),
+                differentiate(expr->lhs, independent_variable) // f'(x)
+            );
+        }
+        case EXPRESSION_NONE:
+            print("Invalid input");
+            return NULL;
     }
-
-    return false;
 }
 
-// (2*x)
-// becomes Term { coefficient: 2, variables: [x, 1] }
-// (2*x)*(2*(x*y))
-// (2*x) becomes Term { coefficient: 2, variables: [x, 1] }
-// (x*y) becomes Term { coefficient: 1, variables: [x, 1, y, 1]
-// 2*(x*y) becomes
-struct Term {
+void append_to_buffer(char** buffer, const char* str) {
+    while (*str) {
+        **buffer = *str;
+        ++(*buffer);
+        ++str;
+    }
+    **buffer = 0;
+}
 
-};
+// Function to format an expression
+void format_expression(struct Expression* expr, char** buffer) {
+    if (!expr) return;
 
-struct Expression* simplify_expression(const struct Expression* expr) {
-    struct Expression* out = create_expr();
     switch (expr->type) {
-        // nothing we can do here!
-        case EXPRESSION_VARIABLE:
-        case EXPRESSION_NONE:
-        case EXPRESSION_NUMBER:
-            *out = *expr;
+        case EXPRESSION_NUMBER: {
+            const char* num_str = number_to_string(expr->number);
+            append_to_buffer(buffer, num_str);
             break;
-        case EXPRESSION_MULTIPLY: {
-            // we can simplify a multiplication if there are constants/exponents to be collapsed
-            // e.g. (x) * (x) = x^2
-            // e.g. (2*x) * (x) = 2*x^2
-            // e.g. (2*x) * (3*x) = 6*x^2
-            // e.g. (2*x) * (3*y) = 6*(x*y)
-
-            // Simplify lhs and rhs
-            struct Expression* new_lhs = simplify_expression(expr->lhs);
-            struct Expression* new_rhs = simplify_expression(expr->rhs);
-
-            struct PolynomialTerm lhs_polynomial;
-            struct PolynomialTerm rhs_polynomial;
-
-            out->type = EXPRESSION_NUMBER;
-
-            // CASE 1: BOTH SIDES ARE JUST CONSTANTS
-            if (new_lhs->type == EXPRESSION_NUMBER && new_rhs->type == EXPRESSION_NUMBER) {
-                out->number = new_lhs->number * new_rhs->number;
-                break;
+        }
+        case EXPRESSION_VARIABLE: {
+            char var_str[2];
+            var_str[0] = expr->variable;
+            var_str[1] = '\0';
+            append_to_buffer(buffer, var_str);
+            break;
+        }
+        case EXPRESSION_ADD:
+        case EXPRESSION_SUBTRACT:
+        case EXPRESSION_MULTIPLY:
+        case EXPRESSION_DIVIDE:
+        case EXPRESSION_EXPONENTIATE: {
+            const char* operator = NULL;
+            switch (expr->type) {
+                case EXPRESSION_ADD: operator = "+"; break;
+                case EXPRESSION_SUBTRACT: operator = "-"; break;
+                case EXPRESSION_MULTIPLY: operator = "*"; break;
+                case EXPRESSION_DIVIDE: operator = "/"; break;
+                case EXPRESSION_EXPONENTIATE: operator = "^"; break;
+                default: break;
             }
-
-            out->type = EXPRESSION_MULTIPLY;
-
-            if (try_parse_polynomial_term(&lhs_polynomial, new_lhs) && try_parse_polynomial_term(&rhs_polynomial, new_rhs)) {
-                if ((lhs_polynomial.variable == rhs_polynomial.variable) || (lhs_polynomial.power == 0.0 || rhs_polynomial.power == 0.0)) {
-                    // one of the terms might have a power of zero, in which case there is no variable
-                    // .. TODO
-                    // combine the terms
-                    float new_power = lhs_polynomial.power + rhs_polynomial.power;
-                    float new_coefficient = lhs_polynomial.coefficient * rhs_polynomial.coefficient;
-
-                    new_lhs = create_expr();
-                    new_lhs->type = EXPRESSION_NUMBER;
-                    new_lhs->number = new_coefficient;
-
-                    new_rhs = create_expr();
-                    if (new_power == 1.0) {
-                        new_rhs->type = EXPRESSION_VARIABLE;
-                        new_rhs->variable = lhs_polynomial.variable; // doesn't matter whether it's lhs or rhs!
-                    } else {
-                        new_rhs->type = EXPRESSION_EXPONENTIATE;
-                        new_rhs->lhs = create_expr();
-                        new_rhs->lhs->type = EXPRESSION_VARIABLE;
-                        new_rhs->lhs->variable = lhs_polynomial.variable; // doesn't matter whether it's lhs or rhs!
-                        new_rhs->rhs = create_expr();
-                        new_rhs->rhs->type = EXPRESSION_NUMBER;
-                        new_rhs->rhs->number = new_power;
-                    }
-
-                    out->lhs = new_lhs;
-                    out->rhs = new_rhs;
-                    break;
-                } else {
-                    // This is the most complicated case: (2*x) * (3*y) = 6*(x*y)
-                    print("Not implemented!");
-                    break;
-                }
-            } else {
-                // Don't do any combining
-                out->lhs = new_lhs;
-                out->rhs = new_rhs;
-                break;
-            }
+            append_to_buffer(buffer, "(");
+            format_expression(expr->lhs, buffer);
+            append_to_buffer(buffer, operator);
+            format_expression(expr->rhs, buffer);
+            append_to_buffer(buffer, ")");
+            break;
+        }
+        case EXPRESSION_NONE: {
+            append_to_buffer(buffer, "None");
+            break;
         }
     }
+}
 
-    return out;
+struct Expression* simplify_expression(const struct Expression* expr) {
+    if (!expr) return NULL;
+
+    // Base cases: If the expression is a number or variable, return a copy
+    if (expr->type == EXPRESSION_NUMBER || expr->type == EXPRESSION_VARIABLE) {
+        return create_copy(expr);
+    }
+
+    // Simplify left-hand side and right-hand side
+    struct Expression* simplified_lhs = simplify_expression(expr->lhs);
+    struct Expression* simplified_rhs = simplify_expression(expr->rhs);
+
+    // Apply simplification rules based on the type of expression
+    switch (expr->type) {
+        case EXPRESSION_ADD:
+            // 0 + x = x
+            if (simplified_lhs->type == EXPRESSION_NUMBER && simplified_lhs->number == 0.0f) {
+                struct Expression* result = create_copy(simplified_rhs);
+                return result;
+            }
+            if (simplified_rhs->type == EXPRESSION_NUMBER && simplified_rhs->number == 0.0f) {
+                struct Expression* result = create_copy(simplified_lhs);
+                return result;
+            }
+            break;
+
+        case EXPRESSION_MULTIPLY:
+            // 0 * x = 0
+            if ((simplified_lhs->type == EXPRESSION_NUMBER && simplified_lhs->number == 0.0f) ||
+                (simplified_rhs->type == EXPRESSION_NUMBER && simplified_rhs->number == 0.0f)) {
+                return create_number(0.0f);
+            }
+            // x * 1 = x
+            if (simplified_lhs->type == EXPRESSION_NUMBER && simplified_lhs->number == 1.0f) {
+                struct Expression* result = create_copy(simplified_rhs);
+                return result;
+            }
+            if (simplified_rhs->type == EXPRESSION_NUMBER && simplified_rhs->number == 1.0f) {
+                struct Expression* result = create_copy(simplified_lhs);
+                return result;
+            }
+            break;
+
+        case EXPRESSION_EXPONENTIATE:
+            // x^1 = x
+            if (simplified_rhs->type == EXPRESSION_NUMBER && simplified_rhs->number == 1.0f) {
+                struct Expression* result = create_copy(simplified_lhs);
+                return result;
+            }
+            // x^0 = 0
+            if (simplified_rhs->type == EXPRESSION_NUMBER && simplified_rhs->number == 0.0f) {
+                return create_number(0.0f);
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    // Constant folding: If both sides are constants, compute the result
+    if (simplified_lhs->type == EXPRESSION_NUMBER && simplified_rhs->type == EXPRESSION_NUMBER) {
+        float result;
+        switch (expr->type) {
+            case EXPRESSION_ADD:
+                result = simplified_lhs->number + simplified_rhs->number;
+                break;
+            case EXPRESSION_SUBTRACT:
+                result = simplified_lhs->number - simplified_rhs->number;
+                break;
+            case EXPRESSION_MULTIPLY:
+                result = simplified_lhs->number * simplified_rhs->number;
+                break;
+            case EXPRESSION_DIVIDE:
+                result = simplified_lhs->number / simplified_rhs->number;
+                break;
+            case EXPRESSION_EXPONENTIATE:
+                result = powf_approx(simplified_lhs->number, simplified_rhs->number);
+                break;
+            default:
+                result = 0.0f;
+                break;
+        }
+        return create_number(result);
+    }
+
+    // If no simif (!expr) return NULL;
+    // simplifications apply, return the expression as a binary operation
+    struct Expression* result = create_binary(expr->type, simplified_lhs, simplified_rhs);
+    return result;
 }

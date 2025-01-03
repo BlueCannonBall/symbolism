@@ -6,6 +6,7 @@
 #include <graphics.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 // Screen: 96x64
 // unsigned char: 5x7
@@ -13,6 +14,7 @@
 unsigned char line = 0;
 
 void initialize_console(void) {
+    line = 0;
     clg();
 }
 
@@ -108,35 +110,54 @@ void read_line(char* str, unsigned char size) {
 }
 
 const char* number_to_string(float value) {
-    static char ret[30];
-    char* ptr = ret;
+    static char buf[32];  // Static buffer for result
+    char* ptr = buf;
 
+    // Handle negative numbers
     if (value < 0) {
         *ptr++ = '-';
         value = -value;
     }
 
-    int integer = value;
-    float fraction = value - integer;
+    // Extract integer part
+    int int_part = (int)value;
+    float fractional_part = value - int_part;
 
-    char int_str[20];
-    unsigned char i = 0;
+    // Convert integer part to string
+    char int_buf[12];  // Temporary buffer for integer
+    char* int_ptr = int_buf + sizeof(int_buf) - 1;
+    *int_ptr = '\0';
     do {
-        int_str[i++] = '0' + (integer % 10);
-        integer /= 10;
-    } while (integer > 0);
-    while (i > 0) {
-        *ptr++ = int_str[--i];
+        *--int_ptr = '0' + (int_part % 10);
+        int_part /= 10;
+    } while (int_part > 0);
+
+    // Append integer part to result
+    while (*int_ptr) {
+        *ptr++ = *int_ptr++;
     }
 
-    *ptr++ = '.';
-    for (unsigned char i = 0; i < 6; ++i) {
-        fraction *= 10;
-        int digit = (int) fraction;
-        *ptr++ = '0' + digit;
-        fraction -= digit;
+    // Only handle the fractional part if it's non-zero
+    if (fractional_part > 0.0001f) {
+        *ptr++ = '.';
+
+        // Convert fractional part to string, avoiding unnecessary zeros
+        bool fractional_started = false;
+        for (int i = 0; i < 6; ++i) { // Limit to 6 decimal places
+            fractional_part *= 10;
+            int digit = (int)fractional_part;
+            if (digit != 0 || fractional_started) {  // Only print if non-zero or after we start printing
+                *ptr++ = '0' + digit;
+                fractional_part -= digit;
+                fractional_started = true;
+            } else {
+                fractional_part -= digit;  // Skip trailing zeros
+            }
+
+            if (fractional_part < 0.0001f) break;  // Stop if the fractional part is effectively zero
+        }
     }
 
-    *ptr = '\0';
-    return ret;
+    *ptr = '\0'; // Null-terminate the string
+    return buf;
 }
